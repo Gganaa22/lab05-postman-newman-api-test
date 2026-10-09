@@ -36,6 +36,8 @@ PS> newman -v
 | | талбар дутуу | `courseID` байхгүй |
 | | буруу JSON | `{bad` |
 
+Collection-д тест бүр өөр ID ашигладаг (s01/c01, s02_ghost, ...), дээрх нэрс нь зөвхөн төлөөлөх утгын төрлийг заана.
+
 ### Спецификацийн хүснэгт
 
 Серверийн шалгах дараалал: талбар дутуу эсэх, оюутан байгаа эсэх, идэвхтэй эсэх, хичээл байгаа эсэх, урьдач.
@@ -72,3 +74,50 @@ PS> newman -v
 
 `lab05-collection-fail.json`-ыг `make-fail.js` скриптээр `lab05-collection.json`-оос
 үүсгэсэн: бүтэн collection-ий хуулбар, зөвхөн Т03-ийн нэг oracle өөрчлөгдсөн.
+
+
+## Тестээр илрүүлсэн согог (`lab05-defects.json`)
+
+Үндсэн collection нь pass байх ёстой тул согог илрүүлэх тестүүдийг тусдаа
+`lab05-defects.json`-д хийж (`make-defects.js` скриптээр үүсгэсэн),
+`results/newman-defects.txt`-д хадгалсан. Эдгээр тест зориуд унана.
+
+| № | Оролт | Хүлээгдэх | Бодитоор |
+| --- | --- | --- | --- |
+| Д1-Д3 | `studentID` = `__proto__`, `constructor`, `toString` (PUT хийгээгүй) | `ERROR_NO_STUDENT` | `ERROR_INACTIVE_STUDENT` |
+| Д4 | нэг оюутныг нэг хичээлд 2 удаа бүртгэх | 2 дахь нь татгалзана | 2 дахь нь ч `201`, `registrationID` нэмэгдсэн |
+| Д5 | `courseID` = `constructor` | `ERROR_NO_COURSE` | сервер унасан: `TypeError: Cannot read properties of undefined (reading 'filter')` |
+
+Newman үр дүн: requests 12 executed / 1 failed, assertions 13 executed / 6 failed,
+exit code 1. Д5 серверийг унагаадаг тул collection-ий хамгийн сүүлд байрлуулсан.
+
+Нэмэлт: PowerShell-ээр (`Invoke-RestMethod`) гараар шалгахад body нь `null` үед сервер
+`Cannot destructure property 'studentID' of 'data' as it is null` алдаагаар унадаг.
+Мөн `courseID` нь `toString`, `__proto__` үед `constructor`-той адил унана.
+Эдгээрийг collection-д оруулаагүй (нэг ажиллуулалтад нэг л унах боломжтой).
+
+Шалтгаан: `students`, `courses` нь энгийн `{}` object тул `students["constructor"]`
+нь prototype-ийн утгыг буцаадаг. Давхар бүртгэлийн хувьд `registrations`-д
+`studentID + courseID` давхцлыг шалгадаггүй.
+
+## Дүгнэлт
+
+Дизайны 5 алхмаас хамгийн их бодол шаардсан нь хүлээгдэх утгыг (oracle) тодорхойлох алхам байлаа.
+Ялангуяа давхар алдаа үед аль `result` буцахыг заавар заагаагүй тул `server.js`-ийн
+шалгах дарааллыг уншиж, оюутны шалгалт хичээлийнхээс түрүүлдэг гэж таамаглаад тестээр баталгаажуулсан.
+Идэвхгүй оюутан + байхгүй хичээл `ERROR_INACTIVE_STUDENT`, байхгүй оюутан + байхгүй хичээл
+`ERROR_NO_STUDENT` буцдаг нь тэр таамаглалыг батлав.
+Боломжгүй хослол ч таарсан: байхгүй оюутанд `coursesTaken` байхгүй тул
+"байхгүй оюутан + урьдач хангасан" гэсэн хослол утгагүй, мөн талбар дутуу үед
+дараагийн шалгалтууд хүртэл хүрдэггүй.
+Тест бүрийг бие даасан болгохын тулд өөр өөр ID ашиглаж, setup PUT-ийг тест бүрдээ хийсэн,
+`registrationID`-ийн яг утгыг шалгалгүй зөвхөн тоо мөн эсэхийг шалгасан.
+PASS ажиллуулалт 44 assertion, 0 failed, exit 0 байсан бол зөвхөн нэг oracle-ийг өөрчилсөн
+FAIL collection 44-өөс 1 нь унаж exit 1 болсон нь oracle алдааны жишээ юм.
+DOWN үед бүх 27 request `ECONNREFUSED`-ээр унасан нь холболтын (interface) алдаа тул oracle
+алдаатай ялгаатай. Тестүүд серверийн бодит согог олсон: `__proto__`, `constructor`,
+`toString` ID-г оюутан гэж андуурч `ERROR_INACTIVE_STUDENT` буцаах, нэг оюутныг нэг хичээлд
+давхар бүртгэх, `constructor` гэсэн `courseID` болон `null` body дээр сервер унах.
+Үүнээс тестийн зорилго бүх тестийг pass болгох биш, согог олох гэдгийг ойлгосон.
+`students`, `courses`-ийг `Map` болгож (эсвэл `Object.hasOwn`-оор шалгаж), давхар бүртгэлийг
+шалгаж, body-г `null` эсэхийг шалгавал эдгээр согогийг засаж болно.
