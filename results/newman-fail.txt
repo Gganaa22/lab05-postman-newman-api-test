@@ -1,0 +1,167 @@
+newman
+
+Lab05
+
+□ Даалгавар 1: анхны хүсэлт
+└ Setup: оюутан
+  PUT http://localhost:3000/students/B231234567 [200 OK, 178B, 36ms]
+  √  Setup амжилттай: статус 200
+
+└ Setup: хичээл
+  PUT http://localhost:3000/courses/CS313 [200 OK, 178B, 6ms]
+  √  Setup амжилттай: статус 200
+
+└ Бүртгүүлэх
+  POST http://localhost:3000/registrations [201 Created, 202B, 6ms]
+  √  Анхны бүртгэл: статус 201
+  √  Анхны бүртгэл: result = OK
+  √  registrationID тоо байна
+
+□ Т01: Happy path: бүртгэл амжилттай
+└ Setup: оюутан
+  PUT http://localhost:3000/students/s01 [200 OK, 178B, 8ms]
+  √  Setup амжилттай: статус 200
+
+└ Setup: хичээл
+  PUT http://localhost:3000/courses/c01 [200 OK, 178B, 9ms]
+  √  Setup амжилттай: статус 200
+
+└ Бүртгүүлэх
+  POST http://localhost:3000/registrations [201 Created, 202B, 7ms]
+  √  Happy path: статус 201
+  √  Happy path: result = OK
+  √  registrationID тоо байна
+
+□ Т02: Оюутан байхгүй
+└ Setup: хичээл
+  PUT http://localhost:3000/courses/c02 [200 OK, 178B, 8ms]
+  √  Setup амжилттай: статус 200
+
+└ Бүртгүүлэх
+  POST http://localhost:3000/registrations [200 OK, 192B, 9ms]
+  √  Оюутан байхгүй: статус 200
+  √  Оюутан байхгүй: result = ERROR_NO_STUDENT
+
+□ Т03: Идэвхгүй оюутан
+└ Setup: оюутан
+  PUT http://localhost:3000/students/s03 [200 OK, 178B, 13ms]
+  √  Setup амжилттай: статус 200
+
+└ Setup: хичээл
+  PUT http://localhost:3000/courses/c03 [200 OK, 178B, 3ms]
+  √  Setup амжилттай: статус 200
+
+└ Бүртгүүлэх
+  POST http://localhost:3000/registrations [200 OK, 198B, 3ms]
+  √  Идэвхгүй оюутан: статус 200
+  1. Идэвхгүй оюутан: result = ERROR_INACTIVE_STUDENT
+
+□ Т04: Хичээл байхгүй
+└ Setup: оюутан
+  PUT http://localhost:3000/students/s04 [200 OK, 178B, 5ms]
+  √  Setup амжилттай: статус 200
+
+└ Бүртгүүлэх
+  POST http://localhost:3000/registrations [200 OK, 191B, 6ms]
+  √  Хичээл байхгүй: статус 200
+  √  Хичээл байхгүй: result = ERROR_NO_COURSE
+
+□ Т05: Урьдач огт хангаагүй
+└ Setup: оюутан
+  PUT http://localhost:3000/students/s05 [200 OK, 178B, 6ms]
+  √  Setup амжилттай: статус 200
+
+└ Setup: хичээл
+  PUT http://localhost:3000/courses/c05 [200 OK, 178B, 5ms]
+  √  Setup амжилттай: статус 200
+
+└ Бүртгүүлэх
+  POST http://localhost:3000/registrations [200 OK, 215B, 6ms]
+  √  Урьдач огт хангаагүй: статус 200
+  √  Урьдач огт хангаагүй: result = ERROR_PREREQUISITES
+  √  missing = [CS201]
+
+□ Т06: Урьдач зарим нь дутуу
+└ Setup: оюутан
+  PUT http://localhost:3000/students/s06 [200 OK, 178B, 5ms]
+  √  Setup амжилттай: статус 200
+
+└ Setup: хичээл
+  PUT http://localhost:3000/courses/c06 [200 OK, 178B, 6ms]
+  √  Setup амжилттай: статус 200
+
+└ Бүртгүүлэх
+  POST http://localhost:3000/registrations [200 OK, 215B, 5ms]
+  √  Урьдач зарим нь дутуу: статус 200
+  √  Урьдач зарим нь дутуу: result = ERROR_PREREQUISITES
+  √  missing = [CS202]
+
+□ Т07: Давхар алдаа: идэвхгүй оюутан + хичээл байхгүй
+└ Setup: оюутан
+  PUT http://localhost:3000/students/s07 [200 OK, 178B, 3ms]
+  √  Setup амжилттай: статус 200
+
+└ Бүртгүүлэх
+  POST http://localhost:3000/registrations [200 OK, 198B, 3ms]
+  √  Идэвхгүй оюутан + хичээл байхгүй: статус 200
+  √  Идэвхгүй оюутан + хичээл байхгүй: result = ERROR_INACTIVE_STUDENT
+
+□ Т08: Давхар алдаа: оюутан байхгүй + хичээл байхгүй
+└ Бүртгүүлэх
+  POST http://localhost:3000/registrations [200 OK, 192B, 2ms]
+  √  Оюутан байхгүй + хичээл байхгүй: статус 200
+  √  Оюутан байхгүй + хичээл байхгүй: result = ERROR_NO_STUDENT
+
+□ Т09: Хязгаар: урьдачгүй хичээл, хоосон coursesTaken
+└ Setup: оюутан
+  PUT http://localhost:3000/students/s09 [200 OK, 178B, 2ms]
+  √  Setup амжилттай: статус 200
+
+└ Setup: хичээл
+  PUT http://localhost:3000/courses/c09 [200 OK, 178B, 5ms]
+  √  Setup амжилттай: статус 200
+
+└ Бүртгүүлэх
+  POST http://localhost:3000/registrations [201 Created, 202B, 6ms]
+  √  Урьдачгүй хичээл, хоосон coursesTaken: статус 201
+  √  Урьдачгүй хичээл, хоосон coursesTaken: result = OK
+  √  registrationID тоо байна
+
+□ Т10: Хязгаар: courseID талбар дутуу
+└ Бүртгүүлэх
+  POST http://localhost:3000/registrations [400 Bad Request, 202B, 2ms]
+  √  courseID дутуу: статус 400
+  √  courseID дутуу: result = ERROR_BAD_REQUEST
+
+□ Т11: Буруу JSON
+└ Бүртгүүлэх
+  POST http://localhost:3000/registrations [400 Bad Request, 199B, 2ms]
+  √  Буруу JSON: статус 400
+  √  Буруу JSON: result = ERROR_BAD_JSON
+
+┌─────────────────────────┬─────────────────┬─────────────────┐
+│                         │        executed │          failed │
+├─────────────────────────┼─────────────────┼─────────────────┤
+│              iterations │               1 │               0 │
+├─────────────────────────┼─────────────────┼─────────────────┤
+│                requests │              27 │               0 │
+├─────────────────────────┼─────────────────┼─────────────────┤
+│            test-scripts │              27 │               0 │
+├─────────────────────────┼─────────────────┼─────────────────┤
+│      prerequest-scripts │               0 │               0 │
+├─────────────────────────┼─────────────────┼─────────────────┤
+│              assertions │              44 │               1 │
+├─────────────────────────┴─────────────────┴─────────────────┤
+│ total run duration: 2.3s                                    │
+├─────────────────────────────────────────────────────────────┤
+│ total data received: 644B (approx)                          │
+├─────────────────────────────────────────────────────────────┤
+│ average response time: 6ms [min: 2ms, max: 36ms, s.d.: 6ms] │
+└─────────────────────────────────────────────────────────────┘
+
+[31m  # [39m[31m failure        [39m[31m detail                                                               [39m
+[90m    [39m[90m                [39m[90m                                                                      [39m
+ 1.  AssertionError  Идэвхгүй оюутан: result = ERROR_INACTIVE_STUDENT                     
+                     expected 'ERROR_INACTIVE_STUDENT' to deeply equal 'ERROR_NO_STUDENT' 
+                     at assertion:1 in test-script                                        
+                     inside "Т03: Идэвхгүй оюутан / Бүртгүүлэх"                           
