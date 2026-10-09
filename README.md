@@ -54,4 +54,21 @@ PS> newman -v
 | 10 | Хязгаар: courseID талбар дутуу | зөвхөн studentID | 400 | `ERROR_BAD_REQUEST` |
 | 11 | Буруу JSON | `{bad` | 400 | `ERROR_BAD_JSON` |
 
-Тайлбар: 7, 8-р спецификацийн хүлээгдэх утгыг серверийн кодын шалгах дарааллаас гаргасан. Заавар үүнийг тодорхой бичээгүй тул тестээр баталгаажуулна.
+## Newman гаралтын нэгтгэл
+
+| Төлөв | Файл | Collection | Requests (executed / failed) | Assertions (executed / failed) | Exit code |
+| --- | --- | --- | --- | --- | --- |
+| PASS | `results/newman-pass.txt` | `lab05-collection.json` | 27 / 0 | 44 / 0 | 0 |
+| FAIL | `results/newman-fail.txt` | `lab05-collection-fail.json` | 27 / 0 | 44 / 1 | 1 |
+| DOWN | `results/newman-down.txt` | `lab05-collection.json` | 27 / 27 | 44 / 44 | 1 |
+
+### Interface алдаа ба Oracle алдааны ялгаа
+
+- **FAIL (oracle алдаа):** сервер ажиллаж хариу өгсөн боловч Т03-ийн хүлээгдэх `result`
+  (`ERROR_NO_STUDENT`) бодит хариу (`ERROR_INACTIVE_STUDENT`)-той таарсангүй. Зөвхөн
+  энэ нэг assertion унасан тул 1 failed, requests failed 0.
+- **DOWN (interface алдаа):** сервер унтарсан үед бүх 27 request `ECONNREFUSED`-ээр унаж,
+  хариу ирээгүй. Тест script ажилласан ч хариу байхгүй тул 44 assertion бүгд унасан.
+
+`lab05-collection-fail.json`-ыг `make-fail.js` скриптээр `lab05-collection.json`-оос
+үүсгэсэн: бүтэн collection-ий хуулбар, зөвхөн Т03-ийн нэг oracle өөрчлөгдсөн.
