@@ -1,0 +1,115 @@
+newman
+
+Lab05-defects
+
+□ Д1: studentID __proto__ → ERROR_NO_STUDENT байх ёстой
+└ Setup: хичээл
+  PUT http://localhost:3000/courses/d_course [200 OK, 178B, 36ms]
+  √  Setup амжилттай: статус 200
+
+└ Бүртгүүлэх
+  POST http://localhost:3000/registrations [200 OK, 198B, 6ms]
+  1. studentID __proto__ системд байхгүй тул ERROR_NO_STUDENT
+
+□ Д2: studentID constructor → ERROR_NO_STUDENT байх ёстой
+└ Setup: хичээл
+  PUT http://localhost:3000/courses/d_course [200 OK, 178B, 8ms]
+  √  Setup амжилттай: статус 200
+
+└ Бүртгүүлэх
+  POST http://localhost:3000/registrations [200 OK, 198B, 8ms]
+  2. studentID constructor системд байхгүй тул ERROR_NO_STUDENT
+
+□ Д3: studentID toString → ERROR_NO_STUDENT байх ёстой
+└ Setup: хичээл
+  PUT http://localhost:3000/courses/d_course [200 OK, 178B, 4ms]
+  √  Setup амжилттай: статус 200
+
+└ Бүртгүүлэх
+  POST http://localhost:3000/registrations [200 OK, 198B, 6ms]
+  3. studentID toString системд байхгүй тул ERROR_NO_STUDENT
+
+□ Д4: нэг оюутан нэг хичээлд давхар бүртгүүлж болохгүй
+└ Setup: оюутан
+  PUT http://localhost:3000/students/d4_s [200 OK, 178B, 4ms]
+  √  Setup амжилттай: статус 200
+
+└ Setup: хичээл
+  PUT http://localhost:3000/courses/d4_c [200 OK, 178B, 9ms]
+  √  Setup амжилттай: статус 200
+
+└ Эхний бүртгэл
+  POST http://localhost:3000/registrations [201 Created, 202B, 15ms]
+  √  Эхний бүртгэл: статус 201
+
+└ Давхар бүртгэл
+  POST http://localhost:3000/registrations [201 Created, 202B, 3ms]
+  4. Давхар бүртгэл 201-ээр амжилттай болох ёсгүй
+
+□ Д5: courseID constructor → ERROR_NO_COURSE байх ёстой (сервер унана)
+└ Setup: оюутан
+  PUT http://localhost:3000/students/d5_s [200 OK, 178B, 4ms]
+  √  Setup амжилттай: статус 200
+
+└ Бүртгүүлэх
+  POST http://localhost:3000/registrations [errored]
+     read ECONNRESET
+  6. courseID constructor: статус 200
+  7. courseID constructor: result = ERROR_NO_COURSE
+
+┌─────────────────────────┬─────────────────┬─────────────────┐
+│                         │        executed │          failed │
+├─────────────────────────┼─────────────────┼─────────────────┤
+│              iterations │               1 │               0 │
+├─────────────────────────┼─────────────────┼─────────────────┤
+│                requests │              12 │               1 │
+├─────────────────────────┼─────────────────┼─────────────────┤
+│            test-scripts │              12 │               0 │
+├─────────────────────────┼─────────────────┼─────────────────┤
+│      prerequest-scripts │               0 │               0 │
+├─────────────────────────┼─────────────────┼─────────────────┤
+│              assertions │              13 │               6 │
+├─────────────────────────┴─────────────────┴─────────────────┤
+│ total run duration: 1150ms                                  │
+├─────────────────────────────────────────────────────────────┤
+│ total data received: 263B (approx)                          │
+├─────────────────────────────────────────────────────────────┤
+│ average response time: 9ms [min: 3ms, max: 36ms, s.d.: 9ms] │
+└─────────────────────────────────────────────────────────────┘
+
+[31m  # [39m[31m failure        [39m[31m detail                                                                                     [39m
+[90m    [39m[90m                [39m[90m                                                                                            [39m
+ 1.  AssertionError  studentID __proto__ системд байхгүй тул ERROR_NO_STUDENT                                   
+                     expected 'ERROR_INACTIVE_STUDENT' to deeply equal 'ERROR_NO_STUDENT'                       
+                     at assertion:0 in test-script                                                              
+                     inside "Д1: studentID __proto__ → ERROR_NO_STUDENT байх ёстой / Бүртгүүлэх"                
+[90m    [39m[90m                [39m[90m                                                                                            [39m
+ 2.  AssertionError  studentID constructor системд байхгүй тул ERROR_NO_STUDENT                                 
+                     expected 'ERROR_INACTIVE_STUDENT' to deeply equal 'ERROR_NO_STUDENT'                       
+                     at assertion:0 in test-script                                                              
+                     inside "Д2: studentID constructor → ERROR_NO_STUDENT байх ёстой / Бүртгүүлэх"              
+[90m    [39m[90m                [39m[90m                                                                                            [39m
+ 3.  AssertionError  studentID toString системд байхгүй тул ERROR_NO_STUDENT                                    
+                     expected 'ERROR_INACTIVE_STUDENT' to deeply equal 'ERROR_NO_STUDENT'                       
+                     at assertion:0 in test-script                                                              
+                     inside "Д3: studentID toString → ERROR_NO_STUDENT байх ёстой / Бүртгүүлэх"                 
+[90m    [39m[90m                [39m[90m                                                                                            [39m
+ 4.  AssertionError  Давхар бүртгэл 201-ээр амжилттай болох ёсгүй                                               
+                     expected 201 to not deeply equal 201                                                       
+                     at assertion:0 in test-script                                                              
+                     inside "Д4: нэг оюутан нэг хичээлд давхар бүртгүүлж болохгүй / Давхар бүртгэл"             
+[90m    [39m[90m                [39m[90m                                                                                            [39m
+ 5.  Error                                                                                                      
+                     read ECONNRESET                                                                            
+                     at request                                                                                 
+                     inside ""                                                                                  
+[90m    [39m[90m                [39m[90m                                                                                            [39m
+ 6.  AssertionError  courseID constructor: статус 200                                                           
+                     expected PostmanResponse{ …(5) } to have property 'code'                                   
+                     at assertion:0 in test-script                                                              
+                     inside "Д5: courseID constructor → ERROR_NO_COURSE байх ёстой (сервер унана) / Бүртгүүлэх" 
+[90m    [39m[90m                [39m[90m                                                                                            [39m
+ 7.  JSONError       courseID constructor: result = ERROR_NO_COURSE                                             
+                     "undefined" is not valid JSON                                                              
+                     at assertion:1 in test-script                                                              
+                     inside "Д5: courseID constructor → ERROR_NO_COURSE байх ёстой (сервер унана) / Бүртгүүлэх" 
